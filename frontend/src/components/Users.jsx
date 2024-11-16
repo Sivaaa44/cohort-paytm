@@ -8,13 +8,24 @@ export const Users = () => {
     // Replace with backend call
     const [users, setUsers] = useState([]);
     const [filter, setFilter] = useState("");
+    const [debouncedFilter, setdebouncedFilter] = useState("");
+
+
+    useEffect(()=>{
+        const handler = setTimeout(()=>{
+            setdebouncedFilter(filter)
+        },1000);
+        return ()=>{
+            clearInterval(handler);
+        }
+    },[filter])
 
     useEffect(() => {
-        axios.get("http://localhost:3000/api/v1/user/bulk?filter=" + filter)
+        axios.get("http://localhost:3000/api/v1/user/bulk?filter=" + debouncedFilter)
             .then(response => {
                 setUsers(response.data.user)
             })
-    }, [filter])
+    }, [debouncedFilter])
 
     return <>
         <div className="font-bold mt-6 text-lg">
